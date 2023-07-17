@@ -1,4 +1,4 @@
-const deletedTask = false;
+let deletedTask = false;
 
 const displayTasks = (tasks, container) => {
   container.innerHTML = '';
