@@ -1,24 +1,25 @@
-let deletedTask = false;
+const deletedTask = false;
 
 const displayTasks = (tasks, container) => {
   container.innerHTML = '';
   tasks.slice().reverse().forEach((task) => {
-    const checked = task.completed ? 'checked' : null;
-    const taskElement = `<li data-id="${task.index}">
-                    <div class="list__item" id="list_data" data-key="${task.index}">
-                        <input class="checkBox" ${checked} type="checkbox" id=${task.index}>
-                        <input type="text" id="${task.index}" class="${checked}" value="${task.description}">
-                        <button type="button"  class="btn" data-id="${task.index}">
-                            <i class="icon icon--dots"></i>
-                            <i class="icon icon--trash hidden"></i>
-                        </button>
-                    </div>
-                </li>`;
+    const checked = task.completed ? 'checked' : '';
+    const taskElement = `
+      <li data-id="${task.index}">
+        <div class="list__item" id="list_data" data-key="${task.index}">
+          <input class="checkBox" ${checked} type="checkbox" id=${task.index}>
+          <input type="text" id="${task.index}" class="${checked}" value="${task.description}">
+          <button type="button" class="btn" data-id="${task.index}">
+            <i class="icon icon--dots"></i>
+            <i class="icon icon--trash hidden"></i>
+          </button>
+        </div>
+      </li>`;
     container.innerHTML += taskElement;
   });
 };
 
-const removeTask = (taskArray, addTask, id) => {
+const removeTaskFromList = (taskArray, addTask, id) => {
   const index = parseInt(id, 10);
   taskArray.splice(index, 1);
   taskArray.forEach((task, i) => {
@@ -30,7 +31,7 @@ const removeTask = (taskArray, addTask, id) => {
 const deleteTask = () => {
   const delIcons = document.querySelectorAll('.icon--trash');
   delIcons.forEach((delIcon) => {
-    delIcon.addEventListener('mousedown', () => {
+    delIcon.addEventListener('click', () => {
       deletedTask = true;
     });
   });
@@ -69,16 +70,13 @@ const inputEvents = (tasks, addTask, listContainer, render) => {
       div.classList.remove('active');
       item.classList.remove('active');
       const index = item.getAttribute('id');
-      if (!deletedTask) {
-        if (newDesc.trim()) {
-          editTasks(newDesc.trim(), tasks, addTask, index);
-          addTask();
-        }
-      } else {
-        removeTask(tasks, addTask, index);
-        addTask();
-        render();
+      if (deletedTask) {
+        removeTaskFromList(tasks, addTask, index);
+      } else if (newDesc.trim()) {
+        editTasks(newDesc.trim(), tasks, addTask, index);
       }
+      addTask();
+      render();
 
       newDesc = '';
       deletedTask = false;
@@ -87,5 +85,5 @@ const inputEvents = (tasks, addTask, listContainer, render) => {
 };
 
 export {
-  displayTasks, inputEvents, editTasks, deleteTask, removeTask,
+  displayTasks, inputEvents, editTasks, deleteTask, removeTaskFromList,
 };
